@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Diagnóstico de enfermedades del tomate</title>
+
+<style>
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  font-family:Arial, Helvetica, sans-serif;
+  background:#f4f7f4;
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:20px;
+}
+
+.container{
+  width:100%;
+  max-width:700px;
+  background:white;
+  border-radius:24px;
+  padding:40px;
+  box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
+
+h1{
+  text-align:center;
+  color:#166534;
+  margin-bottom:10px;
+}
+
+.subtitle{
+  text-align:center;
+  color:#6b7280;
+  margin-bottom:35px;
+}
+
+.step{
+  display:none;
+}
+
+.step.active{
+  display:block;
+}
+
+.question{
+  font-size:24px;
+  color:#111827;
+  margin-bottom:20px;
+}
+
+select{
+  width:100%;
+  padding:16px;
+  border-radius:14px;
+  border:1px solid #d1d5db;
+  font-size:16px;
+  background:white;
+}
+
+select:focus{
+  outline:none;
+  border-color:#15803d;
+}
+
+.buttons{
+  margin-top:30px;
+  display:flex;
+  justify-content:center;
+  gap:12px;
+  flex-wrap:wrap;
+}
+
+button{
+  border:none;
+  border-radius:14px;
+  padding:14px 24px;
+  font-size:15px;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.next{
+  background:#15803d;
+  color:white;
+}
+
+.next:hover{
+  background:#166534;
+}
+
+.back{
+  background:#e5e7eb;
+  color:#111827;
+}
+
+.back:hover{
+  background:#d1d5db;
+}
+
+.result{
+  background:#f0fdf4;
+  border:1px solid #bbf7d0;
+  border-radius:20px;
+  padding:30px;
+  text-align:center;
+}
+
+.result small{
+  color:#166534;
+  text-transform:uppercase;
+  letter-spacing:1px;
+}
+
+.result h2{
+  color:#14532d;
+  font-size:32px;
+  margin:12px 0;
+}
+
+.result p{
+  color:#374151;
+  font-size:18px;
+}
+
+.loading{
+  text-align:center;
+  color:#6b7280;
+}
+
+.error{
+  margin-top:20px;
+  padding:16px;
+  border-radius:12px;
+  background:#fef2f2;
+  color:#991b1b;
+  text-align:center;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Diagnóstico de enfermedades</h1>
+
+<p class="subtitle">
+Sistema interactivo para tomate
+</p>
+
+<div id="loading" class="loading">
+Cargando datos...
+</div>
+
+<div id="error"></div>
+
+<div class="step active" id="step1">
+
+<div class="question">
+¿Dónde observa el síntoma?
+</div>
+
+<select id="lugarSelect">
+<option value="">Seleccione una opción</option>
+</select>
+
+<div class="buttons">
+<button class="next" onclick="nextStep(1)">
+Continuar
+</button>
+</div>
+
+</div>
+
+<div class="step" id="step2">
+
+<div class="question">
+¿Qué observa?
+</div>
+
+<select id="observaSelect">
+<option value="">Seleccione una opción</option>
+</select>
+
+<div class="buttons">
+
+<button class="back" onclick="prevStep(2)">
+Volver
+</button>
+
+<button class="next" onclick="nextStep(2)">
+Continuar
+</button>
+
+</div>
+
+</div>
+
+<div class="step" id="step3">
+
+<div class="question">
+Clave para descartar
+</div>
+
+<select id="claveSelect">
+<option value="">Seleccione una opción</option>
+</select>
+
+<div class="buttons">
+
+<button class="back" onclick="prevStep(3)">
+Volver
+</button>
+
+<button class="next" onclick="showResult()">
+Ver diagnóstico
+</button>
+
+</div>
+
+</div>
+
+<div class="step" id="step4">
+
+<div class="result">
+
+<small>Diagnóstico probable</small>
+
+<h2 id="diagnostico"></h2>
+
+<p id="agente"></p>
+
+</div>
+
+<div class="buttons">
+
+<button class="next" onclick="restart()">
+Nuevo diagnóstico
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+let data = [];
+
+const lugarSelect =
+document.getElementById('lugarSelect');
+
+const observaSelect =
+document.getElementById('observaSelect');
+
+const claveSelect =
+document.getElementById('claveSelect');
+
+async function cargarCSV(){
+
+  try{
+
+    const response =
+    await fetch('datos.csv');
+
+    if(!response.ok){
+
+      throw new Error(
+        'No se pudo cargar datos.csv'
+      );
+
+    }
+
+    const texto =
+    await response.text();
+
+    const filas =
+    texto.trim().split(/\r?\n/);
+
+    data = filas
+    .slice(1)
+    .filter(f => f.trim() !== '')
+    .map(fila => {
+
+      const valores =
+      fila.split(';');
+
+      return {
+
+        lugar:
+        valores[0]?.trim() || '',
+
+        observa:
+        valores[1]?.trim() || '',
+
+        clave:
+        valores[2]?.trim() || '',
+
+        agente:
+        valores[3]?.trim() || '',
+
+        diagnostico:
+        valores[4]?.trim() || ''
+
+      };
+
+    });
+
+    cargarLugares();
+
+    document
+    .getElementById('loading')
+    .style.display = 'none';
+
+  }
+
+  catch(error){
+
+    document
+    .getElementById('loading')
+    .style.display = 'none';
+
+    document
+    .getElementById('error')
+    .innerHTML =
+    '<div class="error">Error al cargar datos.csv</div>';
+
+    console.error(error);
+
+  }
+
+}
+
+function cargarLugares(){
+
+  const lugares =
+
+  [...new Set(
+    data.map(d => d.lugar)
+  )];
+
+  lugares.forEach(lugar => {
+
+    const option =
+    document.createElement('option');
+
+    option.value = lugar;
+    option.textContent = lugar;
+
+    lugarSelect.appendChild(option);
+
+  });
+
+}
+
+lugarSelect.addEventListener('change', ()=>{
+
+  observaSelect.innerHTML =
+  '<option value="">Seleccione una opción</option>';
+
+  claveSelect.innerHTML =
+  '<option value="">Seleccione una opción</option>';
+
+  const opciones =
+
+  [...new Set(
+
+    data
+    .filter(d =>
+      d.lugar === lugarSelect.value
+    )
+    .map(d => d.observa)
+
+  )];
+
+  opciones.forEach(opcion => {
+
+    const option =
+    document.createElement('option');
+
+    option.value = opcion;
+    option.textContent = opcion;
+
+    observaSelect.appendChild(option);
+
+  });
+
+});
+
+observaSelect.addEventListener('change', ()=>{
+
+  claveSelect.innerHTML =
+  '<option value="">Seleccione una opción</option>';
+
+  const opciones =
+
+  data.filter(d =>
+
+    d.lugar === lugarSelect.value &&
+    d.observa === observaSelect.value
+
+  );
+
+  opciones.forEach(opcion => {
+
+    const option =
+    document.createElement('option');
+
+    option.value = opcion.clave;
+    option.textContent = opcion.clave;
+
+    claveSelect.appendChild(option);
+
+  });
+
+});
+
+function nextStep(step){
+
+  if(step === 1 && !lugarSelect.value){
+
+    alert('Seleccione una opción');
+    return;
+
+  }
+
+  if(step === 2 && !observaSelect.value){
+
+    alert('Seleccione una opción');
+    return;
+
+  }
+
+  document
+  .getElementById(`step${step}`)
+  .classList.remove('active');
+
+  document
+  .getElementById(`step${step+1}`)
+  .classList.add('active');
+
+}
+
+function prevStep(step){
+
+  document
+  .getElementById(`step${step}`)
+  .classList.remove('active');
+
+  document
+  .getElementById(`step${step-1}`)
+  .classList.add('active');
+
+}
+
+function showResult(){
+
+  if(!claveSelect.value){
+
+    alert('Seleccione una opción');
+    return;
+
+  }
+
+  const resultado =
+
+  data.find(d =>
+
+    d.lugar === lugarSelect.value &&
+    d.observa === observaSelect.value &&
+    d.clave === claveSelect.value
+
+  );
+
+  if(!resultado){
+
+    alert('No se encontró diagnóstico');
+    return;
+
+  }
+
+  document
+  .getElementById('diagnostico')
+  .textContent =
+  resultado.diagnostico;
+
+  document
+  .getElementById('agente')
+  .textContent =
+  'Tipo de agente: ' + resultado.agente;
+
+  document
+  .getElementById('step3')
+  .classList.remove('active');
+
+  document
+  .getElementById('step4')
+  .classList.add('active');
+
+}
+
+function restart(){
+
+  location.reload();
+
+}
+
+cargarCSV();
+
+</script>
+
+</body>
+</html>
