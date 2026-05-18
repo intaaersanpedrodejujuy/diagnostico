@@ -1,0 +1,33 @@
+lugar;observa;clave;agente;diagnostico
+Hoja;Marchitamiento;Unilateral (media hoja/planta) con amarillamiento previo.;Hongo / Bacteria;Fusarium o Cancro bacteriano
+Hoja;Marchitamiento;"Repentino e irreversible; la planta muere verde.";Bacteria;Marchitamiento bacteriano
+Hoja;Marchitamiento;"Mancha característica en forma de ""V"" con halo amarillo.";Hongo;Verticillium
+Hoja;Manchas con moho/vello;Vello marrón-violáceo o verde oliva en el envés.;Hongo;Moho de la hoja
+Hoja;Manchas con moho/vello;Polvillo blanco sobre o debajo de las hojas.;Hongo;Polvillo o Cenicilla (Oidio)
+Hoja;Manchas con moho/vello;Manchas marrones con esporulación gris abundante.;Hongo;Moho gris
+Hoja;Manchas secas / Pecas;Manchas angulosas (por nervaduras) de aspecto aceitoso.;Bacteria;Peca bacteriana
+Hoja;Manchas secas / Pecas;Anillos concéntricos oscuros y aspecto pulverulento.;Hongo;Tizón temprano
+Hoja;Manchas secas / Pecas;"Manchas pequeñas; el centro se cae dejando un agujero.";Hongo;Mancha gris
+Hoja;Manchas secas / Pecas;Color bronceado o violáceo con anillos marcados.;Virus;Peste Negra
+Hoja;Deformación;Solo queda la nervadura central (cordón de zapato).;Virus / Herbicida;Virus CMV o Daño por 2,4D
+Hoja;Deformación;Amarillamiento, enanismo y hojas enrolladas.;Virus;Begomovirus
+Hoja;Deformación;Moteado variado (zonas claras y oscuras).;Virus;Mosaico del tomate
+Tallo y cuello;Corte del tallo;Al introducir el tallo en agua sale una nube blanca (zooglea).;Bacteria;Marchitamiento bacteriano
+Tallo y cuello;Corte del tallo;Al presionar el tallo sale un exudado amarillento.;Bacteria;Cancro bacteriano
+Tallo y cuello;Corte del tallo;Médula parda/marrón que se desintegra y queda hueca.;Bacteria;Médula hueca / Necrosis
+Tallo y cuello;Signos Externos;Micelio blanco algodonoso con piedras negras (esclerocios).;Hongo;Moho blanco
+Tallo y cuello;Signos Externos;Micelio con bolitas redondas de color café/castaño.;Hongo;Pata blanca (Sclerotium)
+Tallo y cuello;Signos Externos;Tallo se agrieta y brotan raíces cortas hacia afuera.;Bacteria;Necrosis de la médula
+Tallo y cuello;Base / Raíz;Tallo se adelgaza y se quiebra en plántulas (estrangulamiento).;Hongo / Oomycete;Damping-off
+Tallo y cuello;Base / Raíz;Raíz resquebrajada con aspecto de corcho partido.;Hongo;Raíz corchosa
+Tallo y cuello;Base / Raíz;Manchas secas color castaño rojizo en raíces y cuello.;Hongo;Rhizoctonia
+Frutos;Podredumbre;El fruto es una bolsa de agua retenida por la cáscara.;Bacteria;Podredumbre blanda
+Frutos;Podredumbre;Moteado color oliva o chocolate de aspecto firme.;Oomycete (Hongo);Tizón tardío
+Frutos;Podredumbre;Manchas oscuras que sueltan una masa gelatinosa rosada.;Hongo;Antracnosis
+Frutos;Manchas / Color;Puntos pequeños con halo blanco (ojo de pájaro).;Bacteria;Cancro bacteriano
+Frutos;Manchas / Color;Anillos hundidos (como sacabocados) que se oscurecen.;Virus;Peste Negra
+Frutos;Manchas / Color;Halos blancos circulares (mancha fantasma) en fruto verde.;Hongo;Moho gris
+Frutos;Manchas / Color;Zonas verdes o amarillas que nunca maduran.;Otros (Moscas);Decoloración (Toxinas)
+Frutos;Daño en la base;Mancha negra, seca y rígida en la punta del fruto.;Fisiológico;Podredumbre apical
+Frutos;Daño en la base;Fruto deforme con cicatrices leñosas y agujeros.;Fisiológico;Cara de gato (Frío)
+Frutos;En el cuerpo;Área blanca y apergaminada por exposición directa al sol.;Fisiológico;Quemadura de sol
