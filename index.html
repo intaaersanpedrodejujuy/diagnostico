@@ -1,97 +1,161 @@
 <!DOCTYPE html>
 
 <html lang="es">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Diagnóstico de Tomate</title>
 
 <style>
 
+*{
+  box-sizing:border-box;
+}
+
 body{
   margin:0;
-  font-family:Arial, sans-serif;
-  background:#f3f7f4;
+  font-family:Arial, Helvetica, sans-serif;
+  background:#f4f7f4;
+  min-height:100vh;
   display:flex;
   justify-content:center;
   align-items:center;
-  min-height:100vh;
+  padding:20px;
 }
 
 .container{
-  width:90%;
-  max-width:650px;
+  width:100%;
+  max-width:700px;
   background:white;
+  border-radius:24px;
   padding:40px;
-  border-radius:20px;
-  box-shadow:0 10px 30px rgba(0,0,0,.1);
-  text-align:center;
+  box-shadow:0 10px 30px rgba(0,0,0,.08);
 }
 
 h1{
+  text-align:center;
   color:#166534;
   margin-bottom:10px;
 }
 
 .subtitle{
+  text-align:center;
   color:#666;
-  margin-bottom:30px;
+  margin-bottom:35px;
+  line-height:1.5;
 }
 
 .step{
   display:none;
+  animation:fade .3s ease;
 }
 
 .step.active{
   display:block;
 }
 
+@keyframes fade{
+  from{
+    opacity:0;
+    transform:translateY(10px);
+  }
+
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+.question{
+  font-size:24px;
+  margin-bottom:20px;
+  color:#111827;
+}
+
 select{
   width:100%;
-  padding:14px;
-  margin-top:20px;
-  border-radius:12px;
-  border:1px solid #ccc;
+  padding:16px;
+  border-radius:14px;
+  border:1px solid #d1d5db;
   font-size:16px;
+  background:white;
+}
+
+select:focus{
+  outline:none;
+  border-color:#15803d;
+}
+
+.buttons{
+  margin-top:30px;
+  display:flex;
+  gap:12px;
+  justify-content:center;
+  flex-wrap:wrap;
 }
 
 button{
-  margin-top:25px;
-  padding:12px 24px;
   border:none;
-  border-radius:12px;
-  background:#15803d;
-  color:white;
+  padding:14px 24px;
+  border-radius:14px;
   cursor:pointer;
-  font-size:16px;
+  font-size:15px;
+  transition:.2s;
 }
 
-button:hover{
+.next{
+  background:#15803d;
+  color:white;
+}
+
+.next:hover{
   background:#166534;
 }
 
 .back{
-  background:#d1d5db;
-  color:#111;
-  margin-right:10px;
+  background:#e5e7eb;
 }
 
 .result{
   background:#f0fdf4;
-  padding:25px;
-  border-radius:18px;
-  margin-top:20px;
   border:1px solid #bbf7d0;
+  border-radius:18px;
+  padding:30px;
+  text-align:center;
+}
+
+.result small{
+  color:#166534;
+  text-transform:uppercase;
+  letter-spacing:1px;
 }
 
 .result h2{
-  color:#166534;
-  margin-bottom:10px;
+  margin:12px 0;
+  color:#14532d;
+  font-size:32px;
+}
+
+.result p{
+  color:#374151;
+  font-size:18px;
 }
 
 .loading{
+  text-align:center;
   color:#666;
-  font-size:14px;
+}
+
+.error{
+  background:#fef2f2;
+  color:#991b1b;
+  padding:15px;
+  border-radius:12px;
+  margin-top:20px;
+  text-align:center;
 }
 
 </style>
@@ -105,63 +169,77 @@ button:hover{
 <h1>Diagnóstico de enfermedades</h1>
 
 <p class="subtitle">
-Seleccione las características observadas
+Sistema interactivo de diagnóstico fitosanitario para tomate
 </p>
 
-<div class="loading" id="loading">
-Cargando base de diagnósticos...
+<div id="loading" class="loading">
+Cargando base de datos...
 </div>
+
+<div id="error"></div>
 
 <div class="step active" id="step1">
 
-<h2>Lugar del síntoma</h2>
+<div class="question">
+¿Dónde observa el síntoma?
+</div>
 
 <select id="lugarSelect">
-<option value="">Seleccione</option>
+<option value="">Seleccione una opción</option>
 </select>
 
-<button onclick="nextStep(1)">
+<div class="buttons">
+<button class="next" onclick="nextStep(1)">
 Continuar
 </button>
+</div>
 
 </div>
 
 <div class="step" id="step2">
 
-<h2>Si observa...</h2>
+<div class="question">
+¿Qué observa?
+</div>
 
 <select id="observaSelect">
-<option value="">Seleccione</option>
+<option value="">Seleccione una opción</option>
 </select>
 
-<div>
+<div class="buttons">
+
 <button class="back" onclick="prevStep(2)">
 Volver
 </button>
 
-<button onclick="nextStep(2)">
+<button class="next" onclick="nextStep(2)">
 Continuar
 </button>
+
 </div>
 
 </div>
 
 <div class="step" id="step3">
 
-<h2>Clave para descartar</h2>
+<div class="question">
+Clave para descartar
+</div>
 
 <select id="claveSelect">
-<option value="">Seleccione</option>
+<option value="">Seleccione una opción</option>
 </select>
 
-<div>
+<div class="buttons">
+
 <button class="back" onclick="prevStep(3)">
 Volver
 </button>
 
-<button onclick="showResult()">
+<button class="next" onclick="showResult()">
 Ver diagnóstico
 </button>
+
 </div>
 
 </div>
@@ -170,15 +248,21 @@ Ver diagnóstico
 
 <div class="result">
 
+<small>Diagnóstico probable</small>
+
 <h2 id="diagnostico"></h2>
 
 <p id="agente"></p>
 
 </div>
 
-<button onclick="restart()">
+<div class="buttons">
+
+<button class="next" onclick="restart()">
 Nuevo diagnóstico
 </button>
+
+</div>
 
 </div>
 
@@ -194,51 +278,83 @@ const claveSelect = document.getElementById('claveSelect');
 
 async function cargarCSV(){
 
-  const response = await fetch('datos.csv');
+  try{
 
-  const texto = await response.text();
+    const response = await fetch('datos.csv');
 
-  const filas = texto.trim().split('\\n');
+    if(!response.ok){
 
-data = filas.slice(1)
-.filter(f => f.trim() !== '')
-.map(fila => {
+      throw new Error('No se pudo cargar datos.csv');
 
-const valores = fila
-.split(';')
-.map(v => v.trim().replace(/^"|"$/g, ''));
+    }
 
-return {
+    const texto = await response.text();
 
-```
-lugar: valores[0] || '',
-observa: valores[1] || '',
-clave: valores[2] || '',
-agente: valores[3] || '',
-diagnostico: valores[4] || ''
-```
+    const filas = texto
+    .trim()
+    .split(/\\r?\\n/);
 
-};
+    data = filas
+    .slice(1)
+    .filter(f => f.trim() !== '')
+    .map(fila => {
 
-});
+      const valores = fila
+      .split(';')
+      .map(v =>
+        v
+        .trim()
+        .replace(/^\"|\"$/g, '')
+      );
 
+      return {
 
-  cargarLugares();
+        lugar: valores[0] || '',
+        observa: valores[1] || '',
+        clave: valores[2] || '',
+        agente: valores[3] || '',
+        diagnostico: valores[4] || ''
 
-  document.getElementById('loading').style.display='none';
+      };
+
+    });
+
+    cargarLugares();
+
+    document
+    .getElementById('loading')
+    .style.display='none';
+
+  }
+
+  catch(error){
+
+    document
+    .getElementById('loading')
+    .style.display='none';
+
+    document
+    .getElementById('error')
+    .innerHTML =
+    '<div class=\"error\">Error al cargar datos.csv</div>';
+
+  }
 
 }
 
 function cargarLugares(){
 
-  const lugares = [...new Set(data.map(d => d.lugar))];
+  const lugares = [...new Set(
+    data.map(d => d.lugar)
+  )];
 
-  lugares.forEach(l => {
+  lugares.forEach(lugar => {
 
-    const option = document.createElement('option');
+    const option =
+    document.createElement('option');
 
-    option.value = l;
-    option.textContent = l;
+    option.value = lugar;
+    option.textContent = lugar;
 
     lugarSelect.appendChild(option);
 
@@ -249,22 +365,25 @@ function cargarLugares(){
 lugarSelect.addEventListener('change', ()=>{
 
   observaSelect.innerHTML =
-  '<option value=\"\">Seleccione</option>';
+  '<option value=\"\">Seleccione una opción</option>';
 
   claveSelect.innerHTML =
-  '<option value=\"\">Seleccione</option>';
+  '<option value=\"\">Seleccione una opción</option>';
 
   const opciones = [...new Set(
 
     data
-    .filter(d => d.lugar === lugarSelect.value)
+    .filter(d =>
+      d.lugar === lugarSelect.value
+    )
     .map(d => d.observa)
 
   )];
 
   opciones.forEach(o => {
 
-    const option = document.createElement('option');
+    const option =
+    document.createElement('option');
 
     option.value = o;
     option.textContent = o;
@@ -278,7 +397,7 @@ lugarSelect.addEventListener('change', ()=>{
 observaSelect.addEventListener('change', ()=>{
 
   claveSelect.innerHTML =
-  '<option value=\"\">Seleccione</option>';
+  '<option value=\"\">Seleccione una opción</option>';
 
   const opciones = data.filter(d =>
 
@@ -289,7 +408,8 @@ observaSelect.addEventListener('change', ()=>{
 
   opciones.forEach(o => {
 
-    const option = document.createElement('option');
+    const option =
+    document.createElement('option');
 
     option.value = o.clave;
     option.textContent = o.clave;
@@ -355,10 +475,20 @@ function showResult(){
 
   );
 
-  document.getElementById('diagnostico')
-  .textContent = resultado.diagnostico;
+  if(!resultado){
 
-  document.getElementById('agente')
+    alert('No se encontró diagnóstico');
+    return;
+
+  }
+
+  document
+  .getElementById('diagnostico')
+  .textContent =
+  resultado.diagnostico;
+
+  document
+  .getElementById('agente')
   .textContent =
   'Tipo de agente: ' + resultado.agente;
 
