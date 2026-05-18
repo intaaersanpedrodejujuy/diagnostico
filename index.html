@@ -340,28 +340,28 @@ async function cargarCSV(){
 
       const valores =
       fila.split(';');
+return {
 
-      return {
+lugar:
+valores[0]?.trim() || '',
 
-        lugar:
-        valores[0]?.trim() || '',
+observa:
+valores[1]?.trim() || '',
 
-        observa:
-        valores[1]?.trim() || '',
+clave:
+valores[2]?.trim() || '',
 
-        clave:
-        valores[2]?.trim() || '',
+imagen:
+valores[3]?.trim() || '',
 
-        agente:
-        valores[3]?.trim() || '',
+agente:
+valores[4]?.trim() || '',
 
-        diagnostico:
-        valores[4]?.trim() || '',
+diagnostico:
+valores[5]?.trim() || ''
 
-        imagen:
-        valores[5]?.trim() || ''
+};
 
-      };
 
     });
 
