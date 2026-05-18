@@ -7,7 +7,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Diagnóstico de Tomate</title>
+<title>Diagnóstico de enfermedades del tomate</title>
 
 <style>
 
@@ -30,8 +30,8 @@ body{
   width:100%;
   max-width:700px;
   background:white;
-  padding:40px;
   border-radius:24px;
+  padding:40px;
   box-shadow:0 10px 30px rgba(0,0,0,.08);
 }
 
@@ -43,7 +43,7 @@ h1{
 
 .subtitle{
   text-align:center;
-  color:#666;
+  color:#6b7280;
   margin-bottom:35px;
 }
 
@@ -57,8 +57,8 @@ h1{
 
 .question{
   font-size:24px;
-  margin-bottom:20px;
   color:#111827;
+  margin-bottom:20px;
 }
 
 select{
@@ -67,22 +67,29 @@ select{
   border-radius:14px;
   border:1px solid #d1d5db;
   font-size:16px;
+  background:white;
+}
+
+select:focus{
+  outline:none;
+  border-color:#15803d;
 }
 
 .buttons{
   margin-top:30px;
   display:flex;
-  gap:12px;
   justify-content:center;
+  gap:12px;
   flex-wrap:wrap;
 }
 
 button{
   border:none;
-  padding:14px 24px;
   border-radius:14px;
-  cursor:pointer;
+  padding:14px 24px;
   font-size:15px;
+  cursor:pointer;
+  transition:.2s;
 }
 
 .next{
@@ -90,14 +97,23 @@ button{
   color:white;
 }
 
+.next:hover{
+  background:#166534;
+}
+
 .back{
   background:#e5e7eb;
+  color:#111827;
+}
+
+.back:hover{
+  background:#d1d5db;
 }
 
 .result{
   background:#f0fdf4;
   border:1px solid #bbf7d0;
-  border-radius:18px;
+  border-radius:20px;
   padding:30px;
   text-align:center;
 }
@@ -105,12 +121,13 @@ button{
 .result small{
   color:#166534;
   text-transform:uppercase;
+  letter-spacing:1px;
 }
 
 .result h2{
   color:#14532d;
   font-size:32px;
-  margin:10px 0;
+  margin:12px 0;
 }
 
 .result p{
@@ -120,7 +137,16 @@ button{
 
 .loading{
   text-align:center;
-  color:#666;
+  color:#6b7280;
+}
+
+.error{
+  margin-top:20px;
+  padding:16px;
+  border-radius:12px;
+  background:#fef2f2;
+  color:#991b1b;
+  text-align:center;
 }
 
 </style>
@@ -140,6 +166,8 @@ Sistema interactivo para tomate
 <div id="loading" class="loading">
 Cargando datos...
 </div>
+
+<div id="error"></div>
 
 <div class="step active" id="step1">
 
@@ -246,43 +274,86 @@ document.getElementById('claveSelect');
 
 async function cargarCSV(){
 
-  const response =
-  await fetch('datos.csv');
+  try{
 
-  const texto =
-  await response.text();
+    const response =
+    await fetch('datos.csv');
 
-  const filas =
-  texto.trim().split(/\\r?\\n/);
+    if(!response.ok){
 
-  data = filas.slice(1).map(fila => {
+      throw new Error(
+        'No se pudo cargar datos.csv'
+      );
 
-    const valores = fila.split(';');
+    }
 
-    return {
+    const texto =
+    await response.text();
 
-      lugar: valores[0],
-      observa: valores[1],
-      clave: valores[2],
-      agente: valores[3],
-      diagnostico: valores[4]
+    const filas =
+    texto.trim().split(/\r?\n/);
 
-    };
+    data = filas
+    .slice(1)
+    .filter(f => f.trim() !== '')
+    .map(fila => {
 
-  });
+      const valores =
+      fila.split(';');
 
-  cargarLugares();
+      return {
 
-  document
-  .getElementById('loading')
-  .style.display = 'none';
+        lugar:
+        valores[0]?.trim() || '',
+
+        observa:
+        valores[1]?.trim() || '',
+
+        clave:
+        valores[2]?.trim() || '',
+
+        agente:
+        valores[3]?.trim() || '',
+
+        diagnostico:
+        valores[4]?.trim() || ''
+
+      };
+
+    });
+
+    cargarLugares();
+
+    document
+    .getElementById('loading')
+    .style.display = 'none';
+
+  }
+
+  catch(error){
+
+    document
+    .getElementById('loading')
+    .style.display = 'none';
+
+    document
+    .getElementById('error')
+    .innerHTML =
+    '<div class="error">Error al cargar datos.csv</div>';
+
+    console.error(error);
+
+  }
 
 }
 
 function cargarLugares(){
 
   const lugares =
-  [...new Set(data.map(d => d.lugar))];
+
+  [...new Set(
+    data.map(d => d.lugar)
+  )];
 
   lugares.forEach(lugar => {
 
@@ -301,10 +372,10 @@ function cargarLugares(){
 lugarSelect.addEventListener('change', ()=>{
 
   observaSelect.innerHTML =
-  '<option value=\"\">Seleccione una opción</option>';
+  '<option value="">Seleccione una opción</option>';
 
   claveSelect.innerHTML =
-  '<option value=\"\">Seleccione una opción</option>';
+  '<option value="">Seleccione una opción</option>';
 
   const opciones =
 
@@ -318,13 +389,13 @@ lugarSelect.addEventListener('change', ()=>{
 
   )];
 
-  opciones.forEach(o => {
+  opciones.forEach(opcion => {
 
     const option =
     document.createElement('option');
 
-    option.value = o;
-    option.textContent = o;
+    option.value = opcion;
+    option.textContent = opcion;
 
     observaSelect.appendChild(option);
 
@@ -335,7 +406,7 @@ lugarSelect.addEventListener('change', ()=>{
 observaSelect.addEventListener('change', ()=>{
 
   claveSelect.innerHTML =
-  '<option value=\"\">Seleccione una opción</option>';
+  '<option value="">Seleccione una opción</option>';
 
   const opciones =
 
@@ -346,13 +417,13 @@ observaSelect.addEventListener('change', ()=>{
 
   );
 
-  opciones.forEach(o => {
+  opciones.forEach(opcion => {
 
     const option =
     document.createElement('option');
 
-    option.value = o.clave;
-    option.textContent = o.clave;
+    option.value = opcion.clave;
+    option.textContent = opcion.clave;
 
     claveSelect.appendChild(option);
 
@@ -407,13 +478,22 @@ function showResult(){
 
   }
 
-  const resultado = data.find(d =>
+  const resultado =
+
+  data.find(d =>
 
     d.lugar === lugarSelect.value &&
     d.observa === observaSelect.value &&
     d.clave === claveSelect.value
 
   );
+
+  if(!resultado){
+
+    alert('No se encontró diagnóstico');
+    return;
+
+  }
 
   document
   .getElementById('diagnostico')
