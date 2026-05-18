@@ -221,6 +221,21 @@ Clave para descartar
 <option value="">Seleccione una opción</option>
 </select>
 
+<div id="previewContainer" style="margin-top:25px; display:none; text-align:center;">
+
+<img
+  id="previewImage"
+  src=""
+  alt="Vista previa"
+  style="
+    max-width:100%;
+    border-radius:18px;
+    box-shadow:0 8px 20px rgba(0,0,0,.1);
+  "
+>
+
+</div>
+
 <div class="buttons">
 
 <button class="back" onclick="prevStep(3)">
@@ -228,7 +243,7 @@ Volver
 </button>
 
 <button class="next" onclick="showResult()">
-Ver diagnóstico
+Confirmar diagnóstico
 </button>
 
 </div>
